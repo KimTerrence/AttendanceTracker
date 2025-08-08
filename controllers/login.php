@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         // Prepare statement to prevent SQL injection
-        $stmt = $conn->prepare("SELECT id, password, first_name, last_name FROM students WHERE id_number = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id, password, first_name, last_name, role FROM users WHERE id_number = ? LIMIT 1");
         if ($stmt) {
             $stmt->bind_param('s', $idnum);
             $stmt->execute();
@@ -49,9 +49,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['last_name'] = $user['last_name'];
                     $_SESSION['logged_in'] = true;
 
-                    // Redirect to dashboard or home page
-                    header("Location: ../views/dashboard.php");
-                    exit;
+                    switch($user['role']){
+                        case 0:
+                            header("location: ../views/student.php");
+                            exit;
+                        case 2:
+                            header("location: ../views/teacher.php");
+                            exit;
+                        case 3:
+                            header("location: ../views/admin.php");
+                            exit;
+                    }
+                   
                 } else {
                     $errors[] = 'Invalid password.';
                 }

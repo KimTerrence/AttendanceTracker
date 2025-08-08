@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
     if (empty($errors)) {
    
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM students WHERE id_number = ?");
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE id_number = ?");
         if ($stmt) {
             $stmt->bind_param('s', $idnum);
             $stmt->execute();
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
      
-        $sql = "INSERT INTO students (first_name, last_name, id_number, year_level, section, password) 
+        $sql = "INSERT INTO users (first_name, last_name, id_number, year_level, section, password) 
                 VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         if ($stmt) {
