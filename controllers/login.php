@@ -3,14 +3,6 @@ session_start();
 
 include "../config/db.php";
 
-// Create mysqli connection
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die('Database connection failed: ' . $conn->connect_error);
-}
-
 // Helper function for sanitizing input
 function sanitize($data) {
     return htmlspecialchars(strip_tags(trim($data)));
