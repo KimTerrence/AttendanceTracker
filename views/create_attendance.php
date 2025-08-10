@@ -10,11 +10,6 @@
     $fullname = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
 
     include "../config/db.php";
-    $conn = new mysqli($host, $user, $pass, $dbname);
-
-    if ($conn->connect_error) {
-        die('Database connection failed: ' . $conn->connect_error);
-    }
 
     // Fetch available classes
     $classes = [];
