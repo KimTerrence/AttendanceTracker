@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         // Prepare statement to prevent SQL injection
-        $stmt = $conn->prepare("SELECT id, password, first_name, last_name, role FROM users WHERE id_number = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id_number, password, first_name, last_name, role FROM users WHERE id_number = ? LIMIT 1");
         if ($stmt) {
             $stmt->bind_param('s', $idnum);
             $stmt->execute();
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Verify hashed password
                 if (password_verify($password, $user['password'])) {
                     // Login success: Set session variables and redirect
-                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['user_id'] = $user['id_number'];
                     $_SESSION['first_name'] = $user['first_name'];
                     $_SESSION['last_name'] = $user['last_name'];
                     $_SESSION['logged_in'] = true;
@@ -45,10 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         case 0:
                             header("location: ../views/student.php");
                             exit;
-                        case 2:
+                        case 1:
                             header("location: ../views/teacher.php");
                             exit;
-                        case 3:
+                        case 2:
                             header("location: ../views/admin.php");
                             exit;
                     }
