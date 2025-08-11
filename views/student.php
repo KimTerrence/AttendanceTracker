@@ -89,22 +89,33 @@ $attendance_list = $stmt->get_result();
             background-color: #b06b04;
             box-shadow: none;
         }
-      table {
+        table {
             width: 90%;
             margin: 2rem auto;
             border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: left;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         th {
             background: #14213d;
             color: #fff;
+            text-align: left;
+            padding: 12px;
+            font-size: 16px;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            font-size: 15px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
         tr:hover {
             background-color: #f1f1f1;
+            transition: background 0.2s ease-in-out;
         }
         a.view-link {
             color: #fca311;
@@ -113,6 +124,15 @@ $attendance_list = $stmt->get_result();
         }
         a.view-link:hover {
             text-decoration: underline;
+        }
+         .row-present {
+        background-color: #d4edda !important; /* light green */
+        }
+        .row-absent {
+            background-color: #f8d7da !important; /* light red */
+        }
+        .row-late {
+            background-color: #fff3cd !important; /* light yellow */
         }
     </style>
 </head>
@@ -178,7 +198,18 @@ $attendance_list = $stmt->get_result();
             <tbody>
                 <?php if ($attendance_list->num_rows > 0): ?>
                     <?php while ($row = $attendance_list->fetch_assoc()): ?>
-                        <tr>
+                        <?php
+                            $status = strtolower($row['status']);
+                            $row_class = '';
+                            if ($status === 'present') {
+                                $row_class = 'row-present';
+                            } elseif ($status === 'absent') {
+                                $row_class = 'row-absent';
+                            } elseif ($status === 'late') {
+                                $row_class = 'row-late';
+                            }
+                        ?>
+                        <tr class="<?= $row_class; ?>">
                             <td><?= htmlspecialchars($row['course_code']); ?></td>
                             <td><?= htmlspecialchars($row['year_level']); ?></td>
                             <td><?= htmlspecialchars($row['section']); ?></td>

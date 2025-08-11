@@ -10,16 +10,7 @@
     $fullname = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
 
     include "../config/db.php";
-
-    // Fetch available classes
-    $classes = [];
-    $classQuery = $conn->query("SELECT id, class_name FROM classes ORDER BY class_name ASC");
-    if ($classQuery && $classQuery->num_rows > 0) {
-        while ($row = $classQuery->fetch_assoc()) {
-            $classes[] = $row;
-        }
-    }
-
+    
     // Handle form submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $classId = $_POST['class_id'] ?? '';

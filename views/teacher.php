@@ -81,21 +81,74 @@ $result = $conn->query($sql);
         .search-btn:hover, .create-btn:hover { background-color: #d48806; }
         
         table {
-            width: 90%; margin: 2rem auto; border-collapse: collapse;
-            background: #fff; border-radius: 8px; overflow: hidden;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-        }
-        th, td {
-            padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd;
-        }
-        th { background-color: #14213d; color: #fff; }
-        tr:hover { background-color: #f1f1f1; }
-        .btn-view {
-            background-color: #fca311; color: #14213d; padding: 6px 12px;
-            border-radius: 4px; text-decoration: none; font-weight: bold;
-            display: inline-block;
-        }
-        .btn-view:hover { background-color: #d48806; }
+    width: 90%;
+    margin: 2rem auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+th {
+    background-color: #14213d;
+    color: #ffffff;
+    padding: 14px 16px;
+    font-size: 1rem;
+    text-align: left;
+}
+
+td {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background-color: #f9fafb;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-view,
+.btn-delete {
+    display: inline-block;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.25s ease-in-out;
+    border: none;
+}
+
+/* View button */
+.btn-view {
+    background-color: #fca311;
+    color: #14213d;
+    box-shadow: 0 2px 6px rgba(252, 163, 17, 0.4);
+}
+.btn-view:hover {
+    background-color: #d48806;
+    box-shadow: 0 4px 12px rgba(212, 136, 6, 0.5);
+}
+
+/* Delete button */
+.btn-delete {
+    background-color: #dc3545;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+}
+.btn-delete:hover {
+    background-color: #b02a37;
+    box-shadow: 0 4px 12px rgba(176, 42, 55, 0.5);
+}
+
+
     </style>
 </head>
 <body>
@@ -139,7 +192,14 @@ $result = $conn->query($sql);
                             <td><?php echo htmlspecialchars($row['year_level']); ?></td>
                             <td><?php echo htmlspecialchars($row['section']); ?></td>
                             <td><?php echo htmlspecialchars($row['attendance_date']); ?></td>
-                            <td><a class="btn-view" href="view_attendance.php?id=<?php echo $row['id']; ?>">View</a></td>
+                            <td>
+                                <a class="btn-view" href="view_attendance.php?id=<?php echo $row['id']; ?>">View</a>
+                                <a class="btn-delete" 
+                                href="../controllers/delete_attendance.php?id=<?php echo $row['id']; ?>" 
+                                onclick="return confirm('Are you sure you want to delete this attendance record?');">
+                                Delete
+                                </a>
+                            </td>
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
