@@ -5,7 +5,7 @@ include "../config/db.php";
 try {
     if (!empty($_SESSION['first_name']) || !empty($_SESSION['last_name'])) {
         $fullname = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
-        $current_user_id = $_SESSION['user_id']; // make sure this is set on login
+        $current_user_id = $_SESSION['user_id']; // must be set on login
     } else {
         header("Location: ../index.php");
         exit;
@@ -14,13 +14,28 @@ try {
     echo $err;
 }
 
+// If search query exists
+$searchTerm = '';
 $sql = "SELECT a.id, a.course_code, a.year_level, a.section, a.attendance_date, ad.status
         FROM attendance a
         INNER JOIN attendance_details ad ON a.id = ad.attendance_id
-        WHERE ad.student_id = ?
-        ORDER BY a.created_at DESC";
+        WHERE ad.student_id = ?";
+
+if (!empty($_GET['q'])) {
+    $searchTerm = trim($_GET['q']);
+    $sql .= " AND (a.course_code LIKE ? OR a.section LIKE ? OR a.year_level LIKE ?)";
+}
+
+$sql .= " ORDER BY a.created_at DESC";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $current_user_id);
+
+if (!empty($searchTerm)) {
+    $like = "%" . $searchTerm . "%";
+    $stmt->bind_param("isss", $current_user_id, $like, $like, $like);
+} else {
+    $stmt->bind_param("i", $current_user_id);
+}
+
 $stmt->execute();
 $attendance_list = $stmt->get_result();
 
@@ -134,6 +149,26 @@ $attendance_list = $stmt->get_result();
         .row-late {
             background-color: #fff3cd !important; /* light yellow */
         }
+        .top-bar {
+            display: flex; justify-content: center; align-items: center;
+            gap: 1rem; margin-top: 2rem; flex-wrap: wrap;
+        }
+        .search-form {
+            display: flex; gap: 0.5rem; max-width: 400px; flex: 1;
+        }
+        .search-input {
+            width: 100%; padding: 0.75rem 1rem; border: 1.8px solid #ccc;
+            border-radius: 8px; font-size: 1rem; transition: border-color 0.3s ease;
+        }
+        .search-input:focus { border-color: #14213d; outline: none; }
+        .search-btn, .create-btn {
+            background-color: #fca311; border: none; padding: 0.75rem 1.5rem;
+            border-radius: 6px; color: #14213d; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(252, 163, 17, 0.6);
+            transition: background-color 0.25s ease;
+            text-decoration: none; display: inline-block; text-align: center;
+        }
+        .search-btn:hover, .create-btn:hover { background-color: #d48806; }
     </style>
 </head>
 <body>
@@ -145,46 +180,15 @@ $attendance_list = $stmt->get_result();
         </div>
     </nav>
     <div class="container">
-        <div>
-            <form action="search_results.php" method="GET" style="max-width: 400px; margin: 2rem auto;">
-                <div style="position: relative;">
-                    <input
-                        type="search"
-                        id="search"
-                        name="q"
-                        placeholder="Search classes"
-                        style="
-                            width: 100%;
-                            padding: 0.75rem 3rem 0.75rem 1rem;
-                            border: 1.8px solid #ccc;
-                            border-radius: 8px;
-                            font-size: 1rem;
-                        "
-                        required
-                    />
-                    <button
-                        type="submit"
-                        aria-label="Search"
-                        style="
-                            position: absolute;
-                            right: 0.25rem;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            background-color: #fca311;
-                            border: none;
-                            padding: 0.5rem 1rem;
-                            border-radius: 6px;
-                            color: #14213d;
-                            font-weight: 700;
-                            cursor: pointer;
-                        "
-                    >Search</button>
-                </div>
+        <div class="top-bar">
+            <form method="GET" class="search-form">
+                <input type="search" id="search" name="q" placeholder="Search classes"
+                    class="search-input" value="<?= htmlspecialchars($searchTerm) ?>" />
+                <button type="submit" class="search-btn">Search</button>
             </form>
         </div>
 
         <!-- Attendance List -->
-        <h2 style="text-align:center;">My Attendance Records</h2>
         <table>
             <thead>
                 <tr>

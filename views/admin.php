@@ -12,11 +12,11 @@ $fullname = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
 $idnum = $_SESSION['user_id'];
 
 // Fetch all students (role = 'student')
-$sql_students = "SELECT id_number, first_name, last_name, year_level, section FROM users WHERE role = '0'";
+$sql_students = "SELECT id_number, first_name, last_name, year_level, section, status FROM users WHERE role = '0'";
 $result_students = $conn->query($sql_students);
 
 // Fetch all teachers (role = 'teacher')
-$sql_teachers = "SELECT id_number, first_name, last_name FROM users WHERE role = '1'";
+$sql_teachers = "SELECT id_number, first_name, last_name, status FROM users WHERE role = '1'";
 $result_teachers = $conn->query($sql_teachers);
 ?>
 <!DOCTYPE html>
@@ -81,7 +81,7 @@ $result_teachers = $conn->query($sql_teachers);
 
     /* Container holding both tables side-by-side */
     .container {
-        max-width: 1200px;
+        max-width: 1600px;
         margin: 2rem auto 4rem;
         padding: 0 1rem;
         display: flex;
@@ -200,7 +200,6 @@ $result_teachers = $conn->query($sql_teachers);
     <div class="table-wrapper">
          <div class="table-header">
         <h2>Student List</h2>
-        <a href="../controllers/add_teacher.php" class="btn-add">Add Teacher</a>
         </div>
         <table>
             <thead>
@@ -208,6 +207,7 @@ $result_teachers = $conn->query($sql_teachers);
                     <th>ID Number</th>
                     <th>Full Name</th>
                     <th>Year - Section</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -218,12 +218,21 @@ $result_teachers = $conn->query($sql_teachers);
                             <td><?php echo htmlspecialchars($row['id_number']); ?></td>
                             <td><?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
                             <td><?php echo htmlspecialchars($row['year_level'] . ' ' . $row['section']); ?></td>
+                            <td><?php echo htmlspecialchars($row['status']); ?></td>
                             <td>
-                                <a href="../controllers/block_user.php?id=<?php echo $row['id_number']; ?>"
-                                   class="btn-block"
-                                   onclick="return confirm('Block this student?');">
-                                   Block
-                                </a>
+                                <?php if ($row['status'] === 'blocked'): ?>
+                                    <a href="../controllers/unblock_user.php?id=<?php echo $row['id_number']; ?>"
+                                    class="btn-add"
+                                    onclick="return confirm('Unblock this student?');">
+                                    Unblock
+                                    </a>
+                                <?php else: ?>
+                                    <a href="../controllers/block_user.php?id=<?php echo $row['id_number']; ?>"
+                                    class="btn-block"
+                                    onclick="return confirm('Block this student?');">
+                                    Block
+                                    </a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -238,13 +247,14 @@ $result_teachers = $conn->query($sql_teachers);
     <div class="table-wrapper">
         <div class="table-header">
             <h2>Teacher List</h2>
-            <a href="../controllers/add_teacher.php" class="btn-add">Add Teacher</a>
+            <a href="../views/add_teacher.php" class="btn-add">Add Teacher</a>
         </div>
         <table>
             <thead>
                 <tr>
                     <th>ID Number</th>
                     <th>Full Name</th>
+                      <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -254,12 +264,21 @@ $result_teachers = $conn->query($sql_teachers);
                         <tr>
                             <td><?php echo htmlspecialchars($row['id_number']); ?></td>
                             <td><?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
+                            <td><?php echo htmlspecialchars($row['status']); ?></td>
                             <td>
-                                <a href="../controllers/block_user.php?id=<?php echo $row['id_number']; ?>"
-                                   class="btn-block"
-                                   onclick="return confirm('Block this teacher?');">
-                                   Block
-                                </a>
+                                <?php if ($row['status'] === 'blocked'): ?>
+                                    <a href="../controllers/unblock_user.php?id=<?php echo $row['id_number']; ?>"
+                                    class="btn-add"
+                                    onclick="return confirm('Unblock this teacher?');">
+                                    Unblock
+                                    </a>
+                                <?php else: ?>
+                                    <a href="../controllers/block_user.php?id=<?php echo $row['id_number']; ?>"
+                                    class="btn-block"
+                                    onclick="return confirm('Block this teacher?');">
+                                    Block
+                                    </a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endwhile; ?>

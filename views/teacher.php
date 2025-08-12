@@ -16,11 +16,29 @@ try {
 
 // Fetch attendance list
 $created_by = $_SESSION['user_id']; // logged-in teacher's ID
+$searchTerm = isset($_GET['q']) ? trim($_GET['q']) : '';
+
 $sql = "SELECT id, course_code, year_level, section, attendance_date 
         FROM attendance 
-        WHERE created_by = $created_by
-        ORDER BY attendance_date DESC";
-$result = $conn->query($sql);
+        WHERE created_by = ?";
+
+if (!empty($searchTerm)) {
+    $sql .= " AND (course_code LIKE ? OR year_level LIKE ? OR section LIKE ?)";
+}
+
+$sql .= " ORDER BY attendance_date DESC";
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($searchTerm)) {
+    $like = "%" . $searchTerm . "%";
+    $stmt->bind_param("isss", $created_by, $like, $like, $like);
+} else {
+    $stmt->bind_param("i", $created_by);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 
 ?>
 <!DOCTYPE html>
@@ -163,8 +181,9 @@ tr:hover {
     <div class="container">
         <div class="top-bar">
             <!-- Search Form -->
-            <form action="search_results.php" method="GET" class="search-form">
-                <input type="search" id="search" name="q" placeholder="Search classes" class="search-input" required />
+           <form method="GET" class="search-form">
+                <input type="search" id="search" name="q" placeholder="Search classes"
+                    class="search-input" value="<?= htmlspecialchars($searchTerm) ?>" />
                 <button type="submit" class="search-btn">Search</button>
             </form>
             <!-- Create Attendance Button -->
