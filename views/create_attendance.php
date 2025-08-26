@@ -187,6 +187,11 @@
                 <label for="attendance_date">Date</label>
                 <input type="date" id="attendance_date" name="attendance_date" required>
                 <button type="submit">Save Attendance</button>
+                <a href="./teacher.php" 
+                style="display:inline-block; margin-top:10px; background:#14213d; color:white; padding:0.75rem 1.5rem; border-radius:6px; text-decoration:none; text-align:center; width:100%;">
+                Go Back
+                </a>
+
             </form>
         </div>
     </body>

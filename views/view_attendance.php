@@ -156,6 +156,13 @@ $result = $stmt->get_result();
             <?php endwhile; ?>
         </tbody>
     </table>
+  <div style="text-align:right; margin:20px 80px;">
+    <a href="./teacher.php" 
+       style="background:#14213d; color:white; padding:10px 18px; border-radius:6px; text-decoration:none; font-weight:bold;">
+       ← Go Back
+    </a>
+</div>
+
 
 </body>
 </html>

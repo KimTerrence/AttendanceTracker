@@ -39,7 +39,7 @@ if (!empty($_SESSION['add_teacher_message'])) {
     h2 { text-align: center; color: #14213d; margin-bottom: 1.5rem; }
     label { display: block; margin: 0.5rem 0 0.2rem; font-weight: 600; color: #333; }
     input {
-        width: 100%; padding: 0.6rem; margin-bottom: 1rem;
+        width: 100%; padding: 0.6rem 0; margin-bottom: 1rem;
         border: 1px solid #ccc; border-radius: 6px;
     }
     .btn-submit {
@@ -85,7 +85,7 @@ if (!empty($_SESSION['add_teacher_message'])) {
 
     <form action="../controllers/add_teacher.php" method="POST">
         <label for="id_number">ID Number</label>
-        <input type="number" name="id_number" id="id_number" required>
+        <input type="text" name="id_number" id="id_number" required>
 
         <label for="first_name">First Name</label>
         <input type="text" name="first_name" id="first_name" required>
@@ -97,6 +97,10 @@ if (!empty($_SESSION['add_teacher_message'])) {
         <input type="password" name="password" id="password" required>
 
         <button type="submit" class="btn-submit">Add Teacher</button>
+           <a href="./admin.php" 
+                style="display:inline-block; margin-top:10px; background:#14213d; color:white; padding:0.75rem 0; border-radius:6px; text-decoration:none; text-align:center; width:100%;">
+                Go Back
+                </a>
     </form>
 </div>
 </body>
